@@ -53,6 +53,7 @@ public class HiloServidor extends Thread {
                 switch (result[0]) {
                     case "join":
                         System.out.println("El cliente " + result[1] + " " + result[2]);
+                        System.out.println(usuarioActivo.size());
                         for (int i = 0; i < usuarioActivo.size(); i++) {
                             usuarioActivo.get(i).mensaje("El usuario " + result[1] + " " + result[2], usuarioActivo.size());
                         }
@@ -72,7 +73,6 @@ public class HiloServidor extends Thread {
 
                 }
             } catch (IOException ex) {
-                ex.printStackTrace();
                 System.out.println("El cliente: " + nombre + " se fue");
                 usuarioActivo.removeElement(this);
                 for (int i = 0; i < usuarioActivo.size(); i++) {
@@ -93,22 +93,6 @@ public class HiloServidor extends Thread {
         }
     }
 
-    private void salidaAudio() {
-        try {
-            salidaAudio = cliente.getOutputStream();
-            salidaAudio.write(entradaAudio.readAllBytes());
-        } catch (IOException ex) {
-            Logger.getLogger(HiloServidor.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    public void broadcast(byte[] audioData, ChatClientHandler sender) throws IOException {
-        for (ChatClientHandler client : clients) {
-            if (client != sender) {
-                client.send(audioData);
-            }
-        }
-    }
 
     public void removeClient(ChatClientHandler client) {
         clients.remove(client);
