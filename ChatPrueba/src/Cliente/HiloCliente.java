@@ -34,7 +34,7 @@ public class HiloCliente extends Thread {
                 String ms = entrada.readUTF();
                 System.out.println(ms);
                 cliente.mensaje(ms);
-                cliente.conectados(entrada.readInt());
+               // cliente.conectados(entrada.readInt());
             } catch (IOException ex) {
                 Logger.getLogger(HiloCliente.class.getName()).log(Level.SEVERE, null, ex);
                 }

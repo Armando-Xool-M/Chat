@@ -87,6 +87,7 @@ public class HiloServidor extends Thread {
     public void mensaje(String mensaje, int i) {
         try {
             System.out.println("Mandando mensaje");
+            System.out.println(mensaje);
             salida = new DataOutputStream(cliente.getOutputStream());
             salida.writeUTF(mensaje);
             salida.writeInt(i);
