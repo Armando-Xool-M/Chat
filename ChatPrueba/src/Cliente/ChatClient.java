@@ -20,7 +20,7 @@ import javax.sound.sampled.TargetDataLine;
  */
 public class ChatClient {
 
-    private AudioFormat audioFormat = new AudioFormat(8000.0f, 16, 1, true, true);
+    private AudioFormat audioFormat = new AudioFormat(8000, 8, 1, true, true);
     private TargetDataLine targetDataLine;
     private SourceDataLine sourceDataLine;
     private Socket socket;

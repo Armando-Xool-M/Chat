@@ -20,11 +20,13 @@ import java.util.logging.Logger;
 public class Servidor {
 
     private ServerSocket servidor;
+     private ServerSocket audio;
     private final int Puerto = 3000;
     private List<ChatClientHandler> clients = new ArrayList<>();
 
     public Servidor() throws IOException {
         servidor = new ServerSocket(Puerto);
+        audio = new ServerSocket(8000);
         System.out.println("Servidor con conexion");
 
         while (true) {
@@ -34,6 +36,7 @@ public class Servidor {
             DataInputStream entrada = new DataInputStream(cliente.getInputStream());
             HiloServidor hilo = new HiloServidor(cliente, entrada.readUTF());
             hilo.start();
+            Socket audioo = audio.accept();
             ChatClientHandler clientHandler = new ChatClientHandler(cliente, this);
             clients.add(clientHandler);
             new Thread(clientHandler).start();
