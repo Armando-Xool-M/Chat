@@ -33,14 +33,27 @@ public class HiloServidor extends Thread {
     private List<ChatClientHandler> clients = new ArrayList<>();
 
     HiloServidor(Socket cliente, String nombre) {
+        /*
+        this.cliente = cliente;
+        this.nombre = nombre;
+        usuarioActivo.add(this);*/
+
         this.cliente = cliente;
         this.nombre = nombre;
         usuarioActivo.add(this);
+
+        for (int i = 0; i < usuarioActivo.size(); i++) {
+            usuarioActivo.get(i).enviosMensaje(nombre + " Se ha conectado");
+        }
+        for (int i = 0; i < usuarioActivo.size(); i++) {
+            // usuarioActivo.get(i).enviosMensaje(nombre);
+        }
+
     }
 
     @Override
     public void run() {
-        String mensaje = "";
+        /*  String mensaje = "";
         String[] result;
 
         while (true) {
@@ -50,6 +63,7 @@ public class HiloServidor extends Thread {
                 mensaje = entrada.readUTF();
                 result = mensaje.split(":");
                 System.out.println(mensaje);
+                System.out.println(cliente.getLocalPort());
 
                 switch (result[0]) {
                     case "join":
@@ -81,24 +95,50 @@ public class HiloServidor extends Thread {
                 }
                 break;
             }
+        }*/
+        String mensaje = "";
+        int usuarios = 0;
+        while (true) {
+            try {
+                entrada = new DataInputStream(cliente.getInputStream());
+                mensaje = entrada.readUTF();
+                //Muestra que los usuarios ha mandado mensaje
+                for (int i = 0; i < usuarioActivo.size(); i++) {
+                    usuarioActivo.get(i).enviosMensaje(mensaje);
+                }
+                //Obtiene el nombre de la persona que envia el mensaje y el mensaje y unicamente muestra el mensaje
+                System.out.println(nombre + " envio el mensaje: " + mensaje.substring(nombre.length(), mensaje.length()));
+            } catch (IOException ex) {
+                Logger.getLogger(HiloServidor.class.getName()).log(Level.SEVERE, null, ex);
+                //Muestra al servidor que usuario se desconecta
+                System.out.println("El cliente " + nombre + " se ha desconectado");
+                usuarioActivo.removeElement(this);
+
+                break;
+            }
         }
+
     }
 
-    public void mensaje(String mensaje, int i) {
-        try {
+    public void enviosMensaje(String mensaje) {
+        /*try {
             System.out.println("Mandando mensaje");
             System.out.println(mensaje);
             salida = new DataOutputStream(cliente.getOutputStream());
             salida.writeUTF(mensaje);
-            salida.writeInt(i);
+            //salida.writeInt(i);
         } catch (IOException ex) {
             System.out.println("Error al mandar el mensaje");
+        }*/
+
+        try {
+            salida = new DataOutputStream(cliente.getOutputStream());
+            salida.writeUTF(mensaje);
+
+        } catch (IOException ex) {
+            Logger.getLogger(HiloServidor.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
 
-
-    public void removeClient(ChatClientHandler client) {
-        clients.remove(client);
     }
 
 }
