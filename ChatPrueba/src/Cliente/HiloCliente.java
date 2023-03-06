@@ -31,8 +31,10 @@ public class HiloCliente extends Thread {
         while (true) {
             try {
                 entrada = new DataInputStream(Socketcliente.getInputStream());
-                cliente.mensaje(entrada.readUTF());
-               // cliente.conectados(entrada.readInt());
+                String ms = entrada.readUTF();
+                System.out.println(ms);
+                cliente.mensaje(ms);
+                cliente.conectados(entrada.readInt());
             } catch (IOException ex) {
                 Logger.getLogger(HiloCliente.class.getName()).log(Level.SEVERE, null, ex);
                 }

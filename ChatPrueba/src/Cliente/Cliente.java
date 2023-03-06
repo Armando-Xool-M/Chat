@@ -26,7 +26,7 @@ public class Cliente extends javax.swing.JFrame {
     private Socket cliente;
     public String nombre;
     private final int Puerto = 3000;
-    public String host = "10.182.2.206";
+    public String host = "localhost";//10.182.2.206
     public DataOutputStream salida;
     private String texto;
     HiloCliente hilocliente;
@@ -38,6 +38,8 @@ public class Cliente extends javax.swing.JFrame {
         nombre = JOptionPane.showInputDialog(null, "Ingrese su nombre");
         try {
             cliente = new Socket(host, Puerto);
+            hilocliente = new HiloCliente(cliente, this);
+            hilocliente.start();
             audio =  new Socket(host, 8000);
             salida = new DataOutputStream(cliente.getOutputStream());
             salida.writeUTF(nombre);
@@ -45,8 +47,7 @@ public class Cliente extends javax.swing.JFrame {
         } catch (IOException ex) {
             Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
 
-            hilocliente = new HiloCliente(cliente, this);
-            hilocliente.start();
+           
         }
     }
 
