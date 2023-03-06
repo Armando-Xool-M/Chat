@@ -49,6 +49,7 @@ public class HiloServidor extends Thread {
                 entradaAudio = cliente.getInputStream();
                 mensaje = entrada.readUTF();
                 result = mensaje.split(":");
+                System.out.println(mensaje);
 
                 switch (result[0]) {
                     case "join":
@@ -85,6 +86,7 @@ public class HiloServidor extends Thread {
 
     public void mensaje(String mensaje, int i) {
         try {
+            System.out.println("Mandando mensaje");
             salida = new DataOutputStream(cliente.getOutputStream());
             salida.writeUTF(mensaje);
             salida.writeInt(i);
