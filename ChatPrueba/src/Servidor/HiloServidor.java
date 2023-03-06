@@ -72,6 +72,7 @@ public class HiloServidor extends Thread {
 
                 }
             } catch (IOException ex) {
+                ex.printStackTrace();
                 System.out.println("El cliente: " + nombre + " se fue");
                 usuarioActivo.removeElement(this);
                 for (int i = 0; i < usuarioActivo.size(); i++) {
