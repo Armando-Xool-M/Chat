@@ -26,7 +26,7 @@ public class Cliente extends javax.swing.JFrame {
     private Socket cliente;
     public String nombre;
     private final int Puerto = 3000;
-    public String host = "localhost";//10.182.2.206
+    public String host = "10.182.2.206";//10.182.2.206
     public DataOutputStream salida;
     private String texto;
     HiloCliente hilocliente;
@@ -179,6 +179,7 @@ public class Cliente extends javax.swing.JFrame {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         try {
+            salida.writeUTF("aud:" + nombre);
             ChatClient client1 = new ChatClient(audio);
             System.out.println(client1);
         } catch (IOException ex) {

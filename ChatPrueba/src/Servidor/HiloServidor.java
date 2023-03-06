@@ -50,7 +50,6 @@ public class HiloServidor extends Thread {
                 mensaje = entrada.readUTF();
                 result = mensaje.split(":");
                 System.out.println(mensaje);
-                
 
                 switch (result[0]) {
                     case "join":
@@ -70,7 +69,10 @@ public class HiloServidor extends Thread {
                         }
                         break;
                     case "aud":
-                         
+                        System.out.println("El cliente " + result[1] + " ha activado el microfono: ");
+                        for (int i = 0; i < usuarioActivo.size(); i++) {
+                            usuarioActivo.get(i).mensaje(" ha activado el microfono",usuarioActivo.size());
+                        }
                         break;
 
                 }
@@ -96,7 +98,6 @@ public class HiloServidor extends Thread {
             System.out.println("Error al mandar el mensaje");
         }
     }
-
 
     public void removeClient(ChatClientHandler client) {
         clients.remove(client);
