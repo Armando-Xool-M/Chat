@@ -37,7 +37,7 @@ public class Servidor {
             HiloServidor hilo = new HiloServidor(cliente, entrada.readUTF());
             hilo.start();
             Socket audioo = audio.accept();
-            ChatClientHandler clientHandler = new ChatClientHandler(cliente, this);
+            ChatClientHandler clientHandler = new ChatClientHandler(audioo, this);
             clients.add(clientHandler);
             new Thread(clientHandler).start();
         }
