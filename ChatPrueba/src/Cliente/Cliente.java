@@ -26,17 +26,19 @@ public class Cliente extends javax.swing.JFrame {
     private Socket cliente;
     public String nombre;
     private final int Puerto = 3000;
-    public String host = "10.0.0.6";
+    public String host = "10.182.2.206";
     public DataOutputStream salida;
     private String texto;
     HiloCliente hilocliente;
     private String mensaje;
+     private Socket audio;
 
     public Cliente() {
         initComponents();
         nombre = JOptionPane.showInputDialog(null, "Ingrese su nombre");
         try {
             cliente = new Socket(host, Puerto);
+            audio =  new Socket(host, 8000);
             salida = new DataOutputStream(cliente.getOutputStream());
             salida.writeUTF(nombre);
             salida.writeUTF("join:" + nombre + ":se ha conectado");
@@ -176,7 +178,7 @@ public class Cliente extends javax.swing.JFrame {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         try {
-            ChatClient client1 = new ChatClient(cliente);
+            ChatClient client1 = new ChatClient(audio);
             System.out.println(client1);
         } catch (IOException ex) {
             Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
