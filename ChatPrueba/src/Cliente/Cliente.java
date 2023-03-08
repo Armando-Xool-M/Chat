@@ -4,6 +4,7 @@
  */
 package Cliente;
 
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -26,12 +27,14 @@ public class Cliente extends javax.swing.JFrame {
     private Socket cliente;
     public String nombre;
     private final int Puerto = 3000;
-    public String host = "10.182.2.206";//10.182.2.206
+    public String host = "25.40.239.180";//10.182.2.206
     public DataOutputStream salida;
     private String texto;
     HiloCliente hilocliente;
     private String mensaje;
-     private Socket audio;
+    private Socket audio;
+    boolean micro = false;
+    ChatClient client1;
 
     public Cliente() {
         initComponents();
@@ -40,14 +43,16 @@ public class Cliente extends javax.swing.JFrame {
             cliente = new Socket(host, Puerto);
             hilocliente = new HiloCliente(cliente, this);
             hilocliente.start();
-            audio =  new Socket(host, 8000);
+            audio = new Socket(host, 8000);
             salida = new DataOutputStream(cliente.getOutputStream());
             salida.writeUTF(nombre);
             salida.writeUTF("join:" + nombre + ":se ha conectado");
+            client1 = new ChatClient(audio);
         } catch (IOException ex) {
             Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
 
-           
+        } catch (LineUnavailableException ex) {
+            Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -66,7 +71,7 @@ public class Cliente extends javax.swing.JFrame {
         txtConectados = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
         TxtMandarMsj = new javax.swing.JTextField();
-        jButton3 = new javax.swing.JButton();
+        Microo = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -102,10 +107,10 @@ public class Cliente extends javax.swing.JFrame {
             }
         });
 
-        jButton3.setText("Audio");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        Microo.setText("Audio");
+        Microo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                MicrooActionPerformed(evt);
             }
         });
 
@@ -127,7 +132,7 @@ public class Cliente extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(19, 19, 19)
                         .addComponent(jButton1))
-                    .addComponent(jButton3, javax.swing.GroupLayout.Alignment.TRAILING))
+                    .addComponent(Microo, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap(14, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -146,7 +151,7 @@ public class Cliente extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton2)
                     .addComponent(TxtMandarMsj, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton3))
+                    .addComponent(Microo))
                 .addGap(14, 14, 14))
         );
 
@@ -177,17 +182,22 @@ public class Cliente extends javax.swing.JFrame {
         TxtMandarMsj.requestFocus();
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void MicrooActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MicrooActionPerformed
         try {
             salida.writeUTF("aud:" + nombre);
-            ChatClient client1 = new ChatClient(audio);
-            System.out.println(client1);
+            if (micro) {
+                client1.microPara();
+                Microo.setBackground(Color.CYAN); 
+                micro = false;
+            } else {
+                client1.microReanu();
+                Microo.setBackground(Color.red);
+                micro = true;
+            }
         } catch (IOException ex) {
             Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (LineUnavailableException ex) {
-            Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_MicrooActionPerformed
 
     private void TxtMandarMsjKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TxtMandarMsjKeyPressed
         if (evt.getExtendedKeyCode() == KeyEvent.VK_ENTER) {
@@ -248,11 +258,11 @@ public class Cliente extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton Microo;
     private javax.swing.JTextArea TxtChat;
     private javax.swing.JTextField TxtMandarMsj;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel txtConectados;
     // End of variables declaration//GEN-END:variables

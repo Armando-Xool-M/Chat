@@ -71,7 +71,7 @@ public class HiloServidor extends Thread {
                     case "aud":
                         System.out.println("El cliente " + result[1] + " ha activado el microfono: ");
                         for (int i = 0; i < usuarioActivo.size(); i++) {
-                            usuarioActivo.get(i).mensaje(" ha activado el microfono",usuarioActivo.size());
+                            usuarioActivo.get(i).mensaje( result[1]  +" ha activado el microfono",usuarioActivo.size());
                         }
                         break;
 

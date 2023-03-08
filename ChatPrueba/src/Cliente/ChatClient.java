@@ -27,6 +27,7 @@ public class ChatClient {
     private DataOutputStream dos;
     private DataInputStream dis;
     private boolean running = true;
+    boolean Microo = false;
 
     public ChatClient(Socket st) throws IOException, LineUnavailableException {
         socket = st;
@@ -69,7 +70,7 @@ public class ChatClient {
 
         @Override
         public void run() {
-            while (running) {
+            while (Microo) {
                 int count = targetDataLine.read(buffer, 0, buffer.length);
                 if (count > 0) {
                     try {
@@ -100,5 +101,15 @@ public class ChatClient {
                 }
             }
         }
+        
+        
     }
+    public void microPara(){
+            Microo =  false;
+            System.out.println("apagar micro");
+        }
+      public  void microReanu(){
+            Microo = true;
+            System.out.println("encender audio");
+        }
 }
