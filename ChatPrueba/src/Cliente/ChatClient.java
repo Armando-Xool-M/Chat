@@ -27,7 +27,9 @@ public class ChatClient {
     private DataOutputStream dos;
     private DataInputStream dis;
     private boolean running = true;
-    boolean Microo = false;
+    boolean Microo = true;
+    AudioSender micro;
+    AudioReceiver bocina;
 
     public ChatClient(Socket st) throws IOException, LineUnavailableException {
         socket = st;
@@ -44,8 +46,11 @@ public class ChatClient {
         dos = new DataOutputStream(socket.getOutputStream());
         dis = new DataInputStream(socket.getInputStream());
 
-        new Thread(new AudioSender()).start();
-        new Thread(new AudioReceiver()).start();
+        micro = new AudioSender();
+        micro.start();
+
+        bocina = new AudioReceiver();
+        bocina.start();
     }
 
     public void stop() {
@@ -64,13 +69,14 @@ public class ChatClient {
         }
     }
 
-    private class AudioSender implements Runnable {
+    private class AudioSender extends Thread {
 
         byte[] buffer = new byte[1024];
 
         @Override
         public void run() {
             while (Microo) {
+                
                 int count = targetDataLine.read(buffer, 0, buffer.length);
                 if (count > 0) {
                     try {
@@ -84,13 +90,14 @@ public class ChatClient {
         }
     }
 
-    private class AudioReceiver implements Runnable {
+    private class AudioReceiver extends Thread {
 
         byte[] buffer = new byte[1024];
 
         @Override
         public void run() {
             while (running) {
+                
                 try {
                     int count = dis.read(buffer, 0, buffer.length);
                     if (count > 0) {
@@ -101,15 +108,13 @@ public class ChatClient {
                 }
             }
         }
-        
-        
+
     }
-    public void microPara(){
-            Microo =  false;
-            System.out.println("apagar micro");
-        }
-      public  void microReanu(){
-            Microo = true;
-            System.out.println("encender audio");
-        }
+
+    void pausaMicro(){
+        micro.suspend();
+    }
+    void reanudarMicro(){
+        micro.resume();
+    }
 }

@@ -27,7 +27,7 @@ public class Cliente extends javax.swing.JFrame {
     private Socket cliente;
     public String nombre;
     private final int Puerto = 3000;
-    public String host = "25.40.239.180";//10.182.2.206
+    public String host = "localhost";//10.182.2.206
     public DataOutputStream salida;
     private String texto;
     HiloCliente hilocliente;
@@ -186,12 +186,12 @@ public class Cliente extends javax.swing.JFrame {
         try {
             salida.writeUTF("aud:" + nombre);
             if (micro) {
-                client1.microPara();
-                Microo.setBackground(Color.CYAN); 
+                client1.pausaMicro();
+                Microo.setBackground(Color.red); 
                 micro = false;
             } else {
-                client1.microReanu();
-                Microo.setBackground(Color.red);
+                client1.reanudarMicro();
+                Microo.setBackground(Color.GREEN);
                 micro = true;
             }
         } catch (IOException ex) {
