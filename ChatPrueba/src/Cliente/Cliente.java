@@ -175,6 +175,7 @@ public class Cliente extends javax.swing.JFrame {
         mensaje = TxtMandarMsj.getText();
         try {
             salida.writeUTF("MSJ:" + nombre + ":" + mensaje);
+            System.out.println(hilocliente.toString());
         } catch (IOException ex) {
             Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -249,7 +250,7 @@ public class Cliente extends javax.swing.JFrame {
 
     void mensaje(String mensaje) {
         TxtChat.append(mensaje + "\n");
-        System.out.println(mensaje);
+        System.out.println("Interfaz "+mensaje);
     }
 
     void conectados(int i) {

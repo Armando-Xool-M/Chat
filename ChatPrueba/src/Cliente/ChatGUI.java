@@ -4,9 +4,15 @@
  */
 package Cliente;
 
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
@@ -17,16 +23,46 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javax.sound.sampled.LineUnavailableException;
+import javax.swing.JOptionPane;
 
 public class ChatGUI extends Application {
 
+    private TextField inputField = new TextField();;
+    private TextArea chatArea = new TextArea();
+    private ListView<String> usersList = new ListView<>();
+    private Button sendButton = new Button("Send");
 
+    private Socket cliente;
+    public String nombre;
+    private final int Puerto = 3000;
+    public String host = "localhost";//10.182.2.206
+    public DataOutputStream salida;
+    private String texto;
+    HiloCliente hilocliente;
+    private String mensaje;
+    private Socket audio;
+    boolean micro = false;
+    ChatClient client1;
 
-    private TextField inputField;
-    private TextArea chatArea;
-    private ListView<String> usersList;
-    private Button sendButton;
-    private boolean darkMode = false;
+    public ChatGUI(Socket cliente, String Username) {
+        this.nombre = Username;
+        try {
+            this.cliente = cliente;
+            hilocliente = new HiloCliente(this.cliente, this);
+            hilocliente.start();
+            audio = new Socket(host, 8000);
+            salida = new DataOutputStream(this.cliente.getOutputStream());
+            salida.writeUTF(nombre);
+            salida.writeUTF("join:" + nombre + ":se ha conectado");
+            client1 = new ChatClient(audio);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+
+        } catch (LineUnavailableException ex) {
+            ex.printStackTrace();
+        }
+    }
 
     public static void main(String[] args) {
         launch(args);
@@ -38,17 +74,16 @@ public class ChatGUI extends Application {
         Scene scene = new Scene(root, 800, 600);
 
         // Input field
-        inputField = new TextField();
+        
         inputField.setPrefHeight(40);
         inputField.setPrefWidth(400);
         inputField.setPromptText("Type your message here");
-
         inputField.setOnAction(e -> {
             sendMessage();
         });
 
         // Send button
-        sendButton = new Button("Send");
+        
         sendButton.setPrefHeight(40);
         sendButton.setPrefWidth(60);
         sendButton.setOnAction(e -> {
@@ -61,12 +96,12 @@ public class ChatGUI extends Application {
         inputBox.setPadding(new Insets(10));
 
         // Chat area
-        chatArea = new TextArea();
+        
         chatArea.setEditable(false);
         chatArea.setStyle("-fx-control-inner-background: #222222; -fx-text-fill: white;");
 
         // Users list
-        usersList = new ListView<>();
+        
         usersList.setStyle("-fx-control-inner-background: #333333; -fx-text-fill: white;");
         usersList.getItems().addAll("User 1", "User 2", "User 3");
 
@@ -92,9 +127,19 @@ public class ChatGUI extends Application {
     private void sendMessage() {
         String message = inputField.getText();
         if (!message.isEmpty()) {
-            chatArea.appendText(message + "\n");
-            inputField.clear();
+            try {
+                salida.writeUTF("MSJ:" + nombre + ":" + message);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+
         }
+    }
+
+    void mensaje(String mensaje) {
+        System.out.println(mensaje);
+        chatArea.appendText(mensaje + "\n");
+        inputField.clear();
     }
 
     private void toggleDarkMode() {
@@ -103,7 +148,16 @@ public class ChatGUI extends Application {
         usersList.setStyle("-fx-control-inner-background: #333333; -fx-text-fill: white;");
         inputField.setStyle("-fx-control-inner-background: #f4f4f4; -fx-text-fill: black;");
         sendButton.setStyle("-fx-background-color: #f4f4f4; -fx-text-fill: black;");
-        darkMode = false;
 
+    }
+
+    public void start() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("chat.fxml"));
+        Parent rootNode = loader.load();
+
+        Stage chatStage = new Stage();
+        chatStage.setScene(new Scene(rootNode));
+        chatStage.setTitle("Chat");
+        chatStage.show();
     }
 }

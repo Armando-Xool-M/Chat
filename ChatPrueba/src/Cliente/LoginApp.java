@@ -9,6 +9,7 @@ import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -21,9 +22,11 @@ public class LoginApp extends Application {
     private Socket cliente;
     private final int Puerto = 3000;
     public String host = "25.40.239.180";//10.182.2.206
+    private Stage loginStage;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/login.fxml"));
 
         // Crear los componentes de la ventana de inicio de sesión
         Label lblIP = new Label("Dirección IP:");
@@ -50,8 +53,6 @@ public class LoginApp extends Application {
 
         // Crear la escena y agregar el diseño
         Scene scene = new Scene(gridPane, 400, 250);
-        
-        
 
         // Configurar la acción del botón de inicio de sesión
         btnLogin.setOnAction(event -> {
@@ -69,12 +70,11 @@ public class LoginApp extends Application {
             if (cliente.isConnected()) {
                 // Si las entradas del usuario son válidas, mostrar la aplicación principal
                 primaryStage.setScene(new Scene(new Label("¡Inicio de sesión exitoso!")));
-                System.out.println("entraaa");
-                ChatGUI a = new ChatGUI(cliente);
-                Stage nueva = primaryStage;
-                ;
+                //System.out.println("entraaa");
+                ChatGUI chatGUI = new ChatGUI(cliente, username);
+                chatGUI.start(new Stage());
                 //primaryStage.close();
-                
+                //loginStage.hide();
 
             } else {
                 // Si las entradas del usuario no son válidas, mostrar un mensaje de error

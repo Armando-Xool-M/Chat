@@ -18,9 +18,9 @@ public class HiloCliente extends Thread {
 
     private DataInputStream entrada;
     private Socket Socketcliente;
-    private Cliente cliente;
+    private ChatGUI cliente;
 
-    public HiloCliente(Socket Scliente, Cliente cliente) {
+    public HiloCliente(Socket Scliente, ChatGUI cliente) {
         this.Socketcliente = Scliente;
         this.cliente = cliente;
      
@@ -32,9 +32,9 @@ public class HiloCliente extends Thread {
             try {
                 entrada = new DataInputStream(Socketcliente.getInputStream());
                 String ms = entrada.readUTF();
-                System.out.println(ms);
+                System.out.println("Hilo:"  +ms);
                 cliente.mensaje(ms);
-                cliente.conectados(entrada.readInt());
+                //cliente.conectados(entrada.readInt());
             } catch (IOException ex) {
                 Logger.getLogger(HiloCliente.class.getName()).log(Level.SEVERE, null, ex);
                 }
